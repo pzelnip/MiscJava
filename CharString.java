@@ -19,8 +19,9 @@ public class CharString
 		// but seems redundant
 		System.out.println ((bar.equals (a.toString()) ? "true" : "false"));
 
-		// however if we just pass a Character, the comparison fails, and
-		// I have no idea why
+		// however if we just pass a Character, the comparison fails, 
+		// as the equals method isn't smart enough to call toString on
+		// the character and compare strings. 
 		System.out.println ((bar.equals (a) ? "true" : "false"));
 
 		// and of course direct comparison fails, since Java does strict
@@ -35,7 +36,8 @@ public class CharString
 		// String foo = new String (a);
 
 		// To do the above you need to call the toString() method of
-		// the characcter like so:
+		// the characcter like so, so that the String class' copy
+		// constructor gets called:
 		String foo = new String (a.toString());
 	}
 }
