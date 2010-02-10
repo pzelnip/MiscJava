@@ -2,8 +2,6 @@ import java.util.*;
 
 public class Fibonacci 
 {
-	static Vector<Integer> cached = new Vector<Integer>();
-
 	public static void main (String [] args)
 	{
 		new Fibonacci().runMe();
