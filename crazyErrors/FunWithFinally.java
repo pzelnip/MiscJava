@@ -1,3 +1,8 @@
+/**
+ * Goofy fun with the finally statement.
+ *
+ * @author Adam Parkin
+*/
 
 public class FunWithFinally
 {
@@ -18,6 +23,12 @@ public class FunWithFinally
 		}
 	}
 
+	/*
+	 * Note that finally overrides a return statement.  Thus, if a regular
+	 * return statement is inside a try block, and the finally block associated
+	 * with that try block has a return statement the value returned inside the
+	 * try will never be passed to the caller of the method.
+	*/
 	public static int foo ()
 	{
 		for (;;)

@@ -1,3 +1,10 @@
+/**
+ * Supertypes - a simple program discussion how super/subtypes play out
+ * in the presence of Java generics. 
+ *
+ * @author Adam Parkin
+*/
+
 import java.io.*;
 import java.util.*;
 

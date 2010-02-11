@@ -1,3 +1,10 @@
+/**
+ * GenericTest - a simple program showing the use of Java generics and a
+ * few "gotchas" associated with them in regards to static data members.
+ *
+ * @author Adam Parkin
+*/
+
 public class GenericTest<E>
 {
 	// Static count of instances

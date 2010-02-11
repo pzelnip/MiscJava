@@ -1,6 +1,10 @@
+/**
+ * The Covariance problem in Java.
+ *
+ * @author Adam Parkin
+*/
 public class Covariance 
 {
-
 	public class A
 	{
 		public int x;
@@ -19,12 +23,6 @@ public class Covariance
 		}
 	}
 
-
-	public static void main(String[] args)
-	{
-		new Covariance().runMe();
-	}
-
 	public void runMe()
 	{
 
@@ -34,13 +32,20 @@ public class Covariance
 		bS[0] = new B();
 		bS[0].x = 42;
 
-		aS = bS;
+		aS = bS;	// valid since A is a superclass of B
 		
 		aS[0].display();
 		aS[0] = new B();
 		aS[0].x = 113;
 		bS[0].display();
 
-		aS[1] = new A();	// causes an ArrayStoreException
+		aS[1] = new A();	// causes an ArrayStoreException, as
+					// aS is the same reference as bS, which
+					// is of type B[] (an array of B's).
+	}
+
+	public static void main(String[] args)
+	{
+		new Covariance().runMe();
 	}
 }

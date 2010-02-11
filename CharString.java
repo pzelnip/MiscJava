@@ -21,7 +21,7 @@ public class CharString
 
 		// however if we just pass a Character, the comparison fails, 
 		// as the equals method isn't smart enough to call toString on
-		// the character and compare strings. 
+		// the character and compare strings (rightfully so). 
 		System.out.println ((bar.equals (a) ? "true" : "false"));
 
 		// and of course direct comparison fails, since Java does strict
@@ -39,5 +39,8 @@ public class CharString
 		// the characcter like so, so that the String class' copy
 		// constructor gets called:
 		String foo = new String (a.toString());
+
+		// Note that it's the same with the primitive type char as well:
+		// String fromaChar = new String ('a'); // illegal
 	}
 }
