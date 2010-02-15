@@ -1,44 +1,147 @@
-import java.util.Stack;
-
-/* Adapted from Rhodes Brown. Modified for this lab.
- * Author: Rhodes Brown (wild crazy significant changes by Adam Parkin)
- *
- * Description:
- *   A simple (and incomplete) implementation of a binary search tree.
- *   The tree needs to accept and store a Comparator object that defines
- *   how to order the (generic, type-T) values inserted into the tree.
- *   The inner Node class needs to implement an insert operation that uses
- *   the tree's comparator to decide whether to put a value in the left
- *   or right sub-tree.
- */
-
+import java.util.*;
 
 /**
- * A Binary Search Tree over generic value types.
+ *   A simple implementation of a binary search tree.
+ *   The tree needs to accept and store a Comparator object that defines
+ *   how to order the (generic, type-T) values inserted into the tree.
+ *
+ * @author Rhodes Brown
+ * @author Adam Parkin
  */
-public class BinarySearchTree<T extends Comparable<T>> {
 
+public class BinarySearchTree<T extends Comparable<T>> implements Iterable<T> 
+{
 	private Node root;
 
-	public BinarySearchTree( ) {
-		root = null; // redundant, but doesn't hurt
+	/**
+	 * Creates an empty Binary Search Tree.
+	*/
+	public BinarySearchTree ()
+	{
+		root = null; // hey, why not?
 	}
 
+	/**
+	 * Creates a BST containing the values stored in array
+	*/
+	public BinarySearchTree (T [] array)
+	{
+		for (int x = 0; x < array.length; x++)
+			this.add (array[x]);
+	}
+
+	/**
+	 * Creates a BST containing the values contained in the supplied 
+	 * Collection.
+	 *
+	 * @param col	a collection of values
+	*/
+	public BinarySearchTree (Collection<T> col)
+	{
+		for (T val : col)
+			this.add(val);
+	}
+
+	/**
+	 * Return an iterator for this BST.  This method returns an
+	 * <b>In-Order</b> iterator, for pre and post order traversals
+	 * use the <code>preOrderIterator()</code> and 
+	 * <code>postOrderIterator()</code> methods respectively.
+	 *
+	 * @return 	an in-order iterator for this BST
+	 * @see		BinarySearchTree#postOrderIterator() 
+	 * @see		BinarySearchTree#preOrderIterator() 
+	 * @see		BinarySearchTree#inOrderIterator() 
+	*/
+	public Iterator<T> iterator()
+	{
+		return inOrderIterator(); 
+	}
+
+	/**
+	 * Return an in-order iterator for this BST. Note that this
+	 * method is equivalent to <code>iterator()</code>. 
+	 * For pre and post order traversals
+	 * use the <code>preOrderIterator()</code> and 
+	 * <code>postOrderIterator()</code> methods respectively.
+	 *
+	 * @return 	an in-order iterator for this BST
+	 * @see		BinarySearchTree#postOrderIterator() 
+	 * @see		BinarySearchTree#preOrderIterator() 
+	 * @see		BinarySearchTree#iterator() 
+	*/
+	public Iterator<T> inOrderIterator()
+	{
+		return new InOrderIterator();
+	}
+
+	/**
+	 * Return a pre-order iterator for this BST. 
+	 * For post and in order traversals
+	 * use the <code>postOrderIterator()</code> and 
+	 * <code>inOrderIterator()</code> methods respectively.
+	 *
+	 * @return 	an in-order iterator for this BST
+	 * @see		BinarySearchTree#postOrderIterator() 
+	 * @see		BinarySearchTree#inOrderIterator() 
+	 * @see		BinarySearchTree#iterator() 
+	*/
+	public Iterator<T> preOrderIterator()
+	{
+		return new PreOrderIterator();
+	}
+
+	/**
+	 * Return a post-order iterator for this BST. 
+	 * For pre and in order traversals
+	 * use the <code>preOrderIterator()</code> and 
+	 * <code>inOrderIterator()</code> methods respectively.
+	 *
+	 * @return 	an in-order iterator for this BST
+	 * @see		BinarySearchTree#preOrderIterator() 
+	 * @see		BinarySearchTree#inOrderIterator() 
+	 * @see		BinarySearchTree#iterator() 
+	*/
+	public Iterator<T> postOrderIterator()
+	{
+		return new PostOrderIterator();
+	}
+
+	/**
+	 * Return the height of this BST.
+	 *
+	 * @return the height (length of the path from root to deepest leaf)
+	*/
 	public int height ()
 	{
 		return (isEmpty() ? 0 : root.height());
 	}
 
+	/**
+	 * Check if a given value exists in this BST.
+	 *
+ 	 * @param value	the value to look for
+	 * @return	<code>true</code> if value exists in this BST 
+	 * 		<code>false</code> otherwise
+	*/
 	public boolean exists (T value)
 	{
 		return (root.find (value) != null);
 	}
 
+	/**
+	 * Find the smallest value in this BST.  The meaning of "smallest"
+	 * is determined by the compareTo method of the type of value stored
+	 * in this BST.
+	 *
+	 * @return the smallest value in this BST
+	*/
 	public T minValue ()
 	{
 		return minValue(root);
 	}
 
+	// private helper method
 	private T minValue (Node r)
 	{
 		if (r.left != null)
@@ -47,11 +150,19 @@ public class BinarySearchTree<T extends Comparable<T>> {
 			return r.value;
 	}
 
+	/**
+	 * Find the largest value in this BST.  The meaning of "largest"
+	 * is determined by the compareTo method of the type of value stored
+	 * in this BST.
+	 *
+	 * @return the largest value in this BST
+	*/
 	public T maxValue ()
 	{
 		return maxValue (root);
 	}
 
+	// private helper method
 	private T maxValue (Node r)
 	{
 		if (r.right != null)
@@ -60,26 +171,21 @@ public class BinarySearchTree<T extends Comparable<T>> {
 			return r.value;
 	}
 
-	public void remove (T val)
-	{
-		return;
-		Node n = root.find (val);
-		if (n != null)
-			remove (val, n);
-	}
-
-	private void remove (T val, Node n)
-	{
-		if (n.left == null && n.right == null)
-			// delete the node from the parent
-	}
-
+	/**
+	 * Check if this tree is equal to another.  Two BST's are equal if
+	 * they are structurally equal, with the same values in the same nodes.
+	 *
+	 * @param bstIn	the tree to compare with this tree
+	 * @return	<code>true</code> if bstIn is equal to this BST 
+	 * 		<code>false</code> otherwise
+	*/
 	public boolean equals(BinarySearchTree<T> bstIn)
 	{
 		return equals(bstIn.root, root);
 	}
 
-	public boolean equals(Node aRoot, Node bRoot)
+	// private helper method
+	private boolean equals(Node aRoot, Node bRoot)
 	{
 		// if the same tree then they are identical
 		if (aRoot == bRoot)
@@ -101,33 +207,31 @@ public class BinarySearchTree<T extends Comparable<T>> {
 			equals (aRoot.right, bRoot.right);
 	}
 
-	public BinarySearchTree<T> mirror ()
-	{
-		BinarySearchTree<T> ret = new BinarySearchTree<T>();
-		if (!isEmpty()) 
-			ret.root = mirror (root);
-		return ret;
-	}
-
-	private Node mirror (Node r)
-	{
-		Node newRoot = new Node (r.value);
-		if (r.right != null) newRoot.left = mirror (r.right);
-		if (r.left != null) newRoot.right = mirror (r.left);
-		return newRoot;
-	}
-
+	/**
+	 * Return the number of elements in this BST.
+	 *
+	 * @return the number of elements stored in this BST
+	 */
 	public int size ()
 	{
 		return (isEmpty() ? 0 : root.size());
 	}
 
-	/** Is this tree empty? */
+	/** 
+	 * Check if this tree is empty
+	 *
+	 * @return	<code>true</code> if this BST contains no items 
+	 * 		<code>false</code> otherwise
+	*/
 	public boolean isEmpty() {
 		return ( root == null );
 	}
 
-	/** Insert the given value into this tree using the comparator's order. */
+	/** 
+	 * Insert the given value into this tree using the comparator's order. 
+	 * 
+	 * @param value	the item to insert into this BST
+	 */
 	public void add(T value) {
 		if ( this.isEmpty() )
 			root = new Node(value);
@@ -136,7 +240,11 @@ public class BinarySearchTree<T extends Comparable<T>> {
 			root.insert(value);
 	}
 
-	/** Get a String representation of this tree. */
+	/** 
+	 * Get a String representation of this tree. 
+	 *
+	 * @return a string representation of this BST.
+	*/
 	public String toString() {
 		if ( this.isEmpty() )
 			return "";
@@ -145,63 +253,175 @@ public class BinarySearchTree<T extends Comparable<T>> {
 			return root.toString();
 	}
 
-	public void preOrder (Operation<T> fn)
+	private class PreOrderIterator implements Iterator<T>
 	{
-		preOrder (root, fn);
-	} 
+		private Stack<Node> returnStack;
 
-	private void preOrder (Node r, Operation<T> fn)
-	{
-		fn.apply (r.value);
+		public PreOrderIterator ()
+		{
+			returnStack = new Stack<Node>();
 
-		if (r.left != null)
-			preOrder (r.left, fn);
+			if (root != null)
+				returnStack.push(root);
+		}
 
-		if (r.right != null)
-			preOrder (r.right, fn);
+		public boolean hasNext()
+		{
+			return !returnStack.empty(); 
+		}
+
+		public T next ()
+		{
+			if (!hasNext()) throw new NoSuchElementException();
+
+			Node next = returnStack.pop();
+			T val = next.value;
+
+			if (next.right != null)
+				returnStack.push (next.right);
+			if (next.left != null)
+				returnStack.push(next.left);
+			
+			return val;
+		}
+
+		public void remove()
+		{
+			throw new UnsupportedOperationException();
+		}
 	}
 
-	public void inOrder (Operation<T> fn)
+	/**
+	 * An example of doing a PostOrder traversal iteratively without using a 
+	 * "visited" attribute.
+	 *
+	 * @see <a href="http://discuss.joelonsoftware.com/default.asp?interview.11.318495.11">http://discuss.joelonsoftware.com/default.asp?interview.11.318495.11</a>
+	*/
+	private void postOrder ()
 	{
-		inOrder (root, fn);
+		Stack<Node> stack = new Stack<Node>();
+		Node node = root;
+
+		while (node != null || !stack.empty())
+		{
+			if (node == null)
+			{
+				while (!stack.empty() && node == stack.peek().right)
+				{
+					node = stack.pop();
+					System.out.println (node.value + " ");
+				}
+				node = (stack.empty() ? null : stack.peek().right);
+			}
+			if (node != null)
+			{
+				stack.push(node);
+				node = node.left;
+			}
+		}
 	}
 
-	private void inOrder (Node r, Operation <T> fn)
+	/**
+	 * A PostOrder iterator for our BST.  Note that doing a postorder traversal
+	 * iteratively is nontrivial.  Most implementations rely on a "visited"
+	 * field to be added to each node.  It is possible to do it without this
+	 * attribute, but then becomes difficult to implement in a "continuation"
+	 * style that an iterator requires (how do you pick up where you left off?)
+	 * So as a simple compromise, we just do a natural full recursive postorder 
+	 * traversal of the BST in the constructor, where we add visited values to
+	 * a vector.  Then we can just wrap a vector iterator in our PostOrderIterator
+	 * class.
+	 * 
+	 * The downside to this approach is that our iterator will require O(n) space
+	 * where n is the number of elements in our BST.  
+	*/ 
+	private class PostOrderIterator implements Iterator<T>
 	{
-		if (r.left != null)
-			inOrder (r.left, fn);
+		private Vector<T> vals = new Vector<T>();
+		Iterator<T> i;
 
-		fn.apply (r.value);
+		public PostOrderIterator ()
+		{
+			postOrder (root);
+			i = vals.iterator();
+		}
 
-		if (r.right != null)
-			inOrder (r.right, fn);
+		private void postOrder (Node n)
+		{
+			if (n.left != null)
+				postOrder (n.left);
+
+			if (n.right != null)
+				postOrder (n.right);
+
+			vals.add(n.value);
+		}
+
+		public boolean hasNext()
+		{
+			return i.hasNext();
+		}
+
+		public T next ()
+		{
+			if (!hasNext()) throw new NoSuchElementException();
+
+			return i.next();
+		}
+
+		public void remove()
+		{
+			throw new UnsupportedOperationException();
+		}
 	}
 
-	public void postOrder (Operation<T> fn)
+	private class InOrderIterator implements Iterator<T>
 	{
-		postOrder (root, fn);
+		private Vector<T> vals = new Vector<T>();
+		Iterator<T> i;
+
+		public InOrderIterator ()
+		{
+			inOrder (root);
+			i = vals.iterator();
+		}
+
+		private void inOrder (Node n)
+		{
+			if (n.left != null)
+				inOrder (n.left);
+
+			vals.add(n.value);
+
+			if (n.right != null)
+				inOrder (n.right);
+		}
+
+		public boolean hasNext()
+		{
+			return i.hasNext();
+		}
+
+		public T next ()
+		{
+			if (!hasNext()) throw new NoSuchElementException();
+
+			return i.next();
+		}
+
+		public void remove()
+		{
+			throw new UnsupportedOperationException();
+		}
 	}
-
-	private void postOrder (Node r, Operation <T> fn)
-	{
-		if (r.left != null)
-			postOrder (r.left, fn);
-
-		if (r.right != null)
-			postOrder (r.right, fn);
-
-		fn.apply (r.value);
-	}
-
 
 	/**
 	 * A simple binary search tree node.
 	 *
-	 * NOTE:
 	 * This is an inner class, so instances have access to the methods
 	 * and fields of the outer BinarySearchTree object.
 	 */
-	protected class Node {
+	private class Node {
 		T value;
 		Node left, right;
 
@@ -251,14 +471,12 @@ public class BinarySearchTree<T extends Comparable<T>> {
 					this.right.insert(value);
 		}
 
-		// added by Adam Parkin
 		int size()
 		{
 			return 1 + (this.left == null ? 0 : this.left.size()) 
 				+ (this.right == null ? 0 : this.right.size());
 		}
 
-		// added by Adam Parkin
 		int height ()
 		{
 			int lheight = (this.left == null ? 0 : this.left.height());
@@ -313,6 +531,15 @@ public class BinarySearchTree<T extends Comparable<T>> {
 		bst2.add (new Integer(14));
 		bst2.add (new Integer(420));
 		System.out.println(bst2);
+
+		System.out.println ("------------------------");
+		bst2.postOrder();
+		System.out.println ("------------------------");
+		
+		for (Integer i : bst2)
+			System.out.print (i + " ");
+
+		System.out.println ("]");
 		System.out.println ("Height is : " + bst2.height());
 		System.out.println ("Size is : " + bst2.size());
 		System.out.println ("42 " + (bst2.exists(new Integer (42)) ? "is" : "is not") +
@@ -327,42 +554,6 @@ public class BinarySearchTree<T extends Comparable<T>> {
 		bst3.add (new Double (42.0));
 		bst3.add (new Double (Math.E));
 		System.out.println ("bst3 " + (bst3.isEmpty() ? "is" : "is not") + " empty");
-
-		Operation <Double> od = new OpAddDouble();
-		bst3.inOrder (od);
-		System.out.println ("Sum of values in bst3: " + od.getResult()); 
-
-		BinarySearchTree <String> bstOrderTest = new BinarySearchTree <String>();
-		bstOrderTest.add ("F");
-		bstOrderTest.add ("B");
-		bstOrderTest.add ("A");
-		bstOrderTest.add ("D");
-		bstOrderTest.add ("C");
-		bstOrderTest.add ("E");
-		bstOrderTest.add ("G");
-		bstOrderTest.add ("I");
-		bstOrderTest.add ("H");
-
-		Operation<String> o = new OpToPrettyString<String>();
-		bstOrderTest.inOrder (o);
-		System.out.println ("In Order: " + o.getResult());
-
-		o = new OpToPrettyString<String>();
-		bstOrderTest.preOrder (o);
-		System.out.println ("Pre Order (should be F-B-A-D-C-E-G-I-H): " + o.getResult());
-
-		o = new OpToPrettyString<String>();
-		bstOrderTest.postOrder (o);
-		System.out.println ("Post Order (should be A-C-E-D-B-H-I-G-F): " + o.getResult());
-
-		o = new OpToPrettyString<String>();
-		bstOrderTest.mirror().inOrder(o);
-		System.out.println ("Mirror Test: " + o.getResult());
-
-		OpPushToStack<Integer> oi = new OpPushToStack<Integer>();
-		bst2.inOrder(oi);
-		Stack<Integer> si = oi.getStack(); 
-		System.out.println ("Stack: " + si);
 
 		System.out.println ("bst and bst2 " + 
 			(bst.equals (bst2) ? "are" : "are not") + " equal");
@@ -381,5 +572,20 @@ public class BinarySearchTree<T extends Comparable<T>> {
 		
 		System.out.println ("it1 and it2 " + 
 			(it1.equals (it2) ? "are" : "are not") + " equal");
+
+		Integer [] vals = {42, 24, 13, 111, 278, 9}; 
+		BinarySearchTree <Integer> fromArray = new BinarySearchTree <Integer> (vals);
+		for (Integer i : fromArray)
+			System.out.print (i + " ");
+		System.out.println ("");
+
+		Vector<Integer> vInts = new Vector<Integer>();
+		Random r = new Random (42);
+		for (int x = 0; x < 10; x++)
+			vInts.add (r.nextInt(100));
+		BinarySearchTree <Integer> fromCollection = new BinarySearchTree <Integer> (vInts);
+		for (Integer i : fromCollection)
+			System.out.print (i + " ");
+		System.out.println ("");
 	}
 }
