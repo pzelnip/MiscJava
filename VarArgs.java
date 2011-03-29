@@ -17,6 +17,7 @@ public class VarArgs {
         number of arguments.  You can either give them as individual args or
         even pass an array of arguments.
         */
+        foo();
         foo("a");
         foo("b", "c");
         foo(new Object [] {"d", "e", "f", "g"});
