@@ -31,6 +31,14 @@ public class Test
 				System.out.println ("Unknown Season!");
 		}
 
+        Season aSeason = Season.WINTER;
+
+        if (aSeason == Season.WINTER) {
+            System.out.println ("aSeason is WINTER!");
+        } else {
+            System.out.println ("aSeason is NOT winter");
+        }
+
 		// we can also iterate over all values in an enum
 		System.out.println ("Iterating over all seasons...");
 		for (Season s : Season.values())
