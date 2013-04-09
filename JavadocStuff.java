@@ -42,4 +42,14 @@ public class JavadocStuff {
      */
     public void aDeprecatedMethod() {
     }
+
+    /**
+     * In JDK 5, you can use other markup for code.  So for example,
+     * if a method returns {@code true} you can mark it up like so with the @code tag.
+     * Also, if you wish to use symbols that are typically HTML 
+     * characters, you can do so with @literal, see 
+     * {@literal 5 > 2} 
+     */
+    public void showingOffCodeAndLiteral() {
+    }
 }
